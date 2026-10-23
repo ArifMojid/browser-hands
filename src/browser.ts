@@ -39,3 +39,48 @@ export async function closeBrowser() {
   browser = null;
   page = null;
 }
+
+// Tool 3: list clickable things and inputs, each with a number ("ref")
+export async function listElements(limit = 50) {
+  const p = await getPage();
+  return await p.$$eval(
+    "a, button, input, select, textarea, [role=button]",
+    (els, limit) => {
+      document.querySelectorAll("[data-bh-ref]").forEach((e) => e.removeAttribute("data-bh-ref"));
+      return els
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        })
+        .slice(0, limit)
+        .map((el, i) => {
+          el.setAttribute("data-bh-ref", String(i));
+          const h = el as HTMLElement;
+          const text = (
+            h.innerText ||
+            h.getAttribute("aria-label") ||
+            h.getAttribute("placeholder") ||
+            h.getAttribute("name") ||
+            ""
+          ).trim().slice(0, 80);
+          return { ref: i, tag: el.tagName.toLowerCase(), text };
+        });
+    },
+    limit
+  );
+}
+
+// Tool 4: click an element by its ref number
+export async function clickElement(ref: number) {
+  const p = await getPage();
+  await p.click(`[data-bh-ref="${ref}"]`);
+  await p.waitForLoadState("domcontentloaded");
+  return { url: p.url(), title: await p.title() };
+}
+
+// Tool 5: type into an input by its ref number
+export async function fillElement(ref: number, value: string) {
+  const p = await getPage();
+  await p.fill(`[data-bh-ref="${ref}"]`, value);
+  return { ok: true, ref, value };
+}
