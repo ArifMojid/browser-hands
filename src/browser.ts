@@ -4,12 +4,25 @@ import { chromium, type Browser, type Page } from "playwright";
 let browser: Browser | null = null;
 let page: Page | null = null;
 
-// Get the tab, launching Edge the first time it's needed
+// Get the tab, launching Edge if needed.
+// Also recovers if the user closed the window or Edge crashed.
 export async function getPage(): Promise<Page> {
-  if (!page) {
+  // Browser missing or dead? Launch a fresh one.
+  if (!browser || !browser.isConnected()) {
     browser = await chromium.launch({ channel: "msedge", headless: false });
+    // If Edge closes later, forget it so the next call starts fresh
+    browser.on("disconnected", () => {
+      browser = null;
+      page = null;
+    });
+    page = null;
+  }
+
+  // Tab missing or closed? Open a new one.
+  if (!page || page.isClosed()) {
     page = await browser.newPage();
   }
+
   return page;
 }
 
