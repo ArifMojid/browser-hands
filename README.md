@@ -15,6 +15,7 @@ An open-source **MCP server** that gives AI assistants hands in a real web brows
 | `list_elements` | List visible links, buttons, and inputs, each with a numbered `ref` |
 | `click_element` | Click an element by its `ref` |
 | `fill_element` | Type into an input by its `ref` |
+| `press_key` | Press a key (Enter, Tab, Escape…), optionally on a specific element |
 
 ## How it works
 
@@ -39,6 +40,7 @@ The browser layer knows nothing about MCP, so it can be reused on its own.
 - **Visible-only elements.** Zero-size and hidden elements are filtered out so the agent only sees what a person could interact with.
 - **Context-aware page reading.** `read_page` collapses blank lines and caps output (`maxChars`, default 5000), with a `truncated` flag so the agent knows when it isn't seeing everything.
 - **Persistent, self-healing session.** One browser and tab are reused across calls so multi-step tasks work. If the window is closed or crashes, a liveness check and disconnect listener relaunch it on the next call instead of failing.
+- **Stale-ref fallback.** Sites like Wikipedia re-render inputs while you type, which removes the ref tag. `press_key` detects this instantly and presses the key on the focused element instead of hanging until a timeout.
 - **Validated inputs.** Every tool's arguments are checked with zod schemas before touching the browser.
 - **Clean stdio.** Logs go to stderr; stdout is reserved for MCP protocol messages.
 
@@ -80,7 +82,8 @@ Fully quit and reopen Claude, then ask it to use browser-hands.
 
 ## Roadmap
 
-- [ ] `press_key` and `screenshot` tools
+- [x] `press_key` tool
+- [ ] `screenshot` tool
 - [ ] Action log for replaying and debugging runs
 - [ ] Headless mode option
 - [ ] Store readiness checker built on top of browser-hands
