@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { openPage, readPage, listElements, clickElement, fillElement } from "./browser.js";
+import { openPage, readPage, listElements, clickElement, fillElement, pressKey } from "./browser.js";
 
 // Create the server and give it a name and version
 const server = new McpServer({ name: "browser-hands", version: "0.1.0" });
@@ -79,6 +79,23 @@ server.registerTool(
   },
   async ({ ref, value }) => {
     const result = await fillElement(ref, value);
+    return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+  }
+);
+
+// Tool 6: press_key
+server.registerTool(
+  "press_key",
+  {
+    title: "Press key",
+    description: "Press a keyboard key such as Enter, Tab, Escape or ArrowDown. Pass a ref from list_elements to press it on that element (e.g. Enter in a search box to submit).",
+    inputSchema: {
+      key: z.string().describe('Key name, e.g. "Enter", "Tab", "Escape", "ArrowDown"'),
+      ref: z.number().int().optional().describe("Optional ref from list_elements to focus first"),
+    },
+  },
+  async ({ key, ref }) => {
+    const result = await pressKey(key, ref);
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   }
 );
