@@ -9,7 +9,7 @@ let page: Page | null = null;
 export async function getPage(): Promise<Page> {
     // Browser missing or dead? Launch a fresh one.
     if (!browser || !browser.isConnected()) {
-        browser = await chromium.launch({ channel: "msedge", headless: false });
+        browser = await chromium.launch({ channel: "msedge", headless: process.env.BH_HEADLESS === "1" });
         // If Edge closes later, forget it so the next call starts fresh
         browser.on("disconnected", () => {
             browser = null;

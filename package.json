@@ -1,6 +1,6 @@
 {
   "name": "browser-hands",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MCP server that gives AI agents control of a real browser",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -39,5 +39,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ArifMojid/browser-hands.git"
-  }
+  },
+  "exports": "./dist/browser.js",
+  "types": "dist/browser.d.ts"
 }
