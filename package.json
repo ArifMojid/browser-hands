@@ -36,5 +36,8 @@
   "engines": {
     "node": ">=20"
   },
-  "repository": "github:ArifMojid/browser-hands"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArifMojid/browser-hands.git"
+  }
 }

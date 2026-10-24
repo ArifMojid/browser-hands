@@ -1,4 +1,5 @@
 # browser-hands
+[![npm](https://img.shields.io/npm/v/browser-hands)](https://www.npmjs.com/package/browser-hands)
 
 An open-source **MCP server** that gives AI assistants hands in a real web browser. Connect it to Claude (or any MCP client) and the AI can open pages, read them, find buttons and inputs, click, and type.
 
@@ -44,41 +45,47 @@ The browser layer knows nothing about MCP, so it can be reused on its own.
 - **Validated inputs.** Every tool's arguments are checked with zod schemas before touching the browser.
 - **Clean stdio.** Logs go to stderr; stdout is reserved for MCP protocol messages.
 
-## Setup
+## Quick start
 
 Requires Node.js 20+ and Microsoft Edge (preinstalled on Windows).
 
-```bash
-git clone https://github.com/ArifMojid/browser-hands.git
-cd browser-hands
-npm install
-```
+Open Claude Desktop → **Settings → Developer → Edit Config** and add:
 
-Test with the MCP Inspector:
-
-```bash
-npx @modelcontextprotocol/inspector npx tsx src/server.ts
-```
-
-### Connect to Claude Desktop
-
-Add this to `claude_desktop_config.json` (Settings → Developer → Edit Config), adjusting the paths:
-
+**Windows**
 ```json
 {
   "mcpServers": {
     "browser-hands": {
-      "command": "node",
-      "args": [
-        "C:\\path\\to\\browser-hands\\node_modules\\tsx\\dist\\cli.mjs",
-        "C:\\path\\to\\browser-hands\\src\\server.ts"
-      ]
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "browser-hands"]
+    }
+  }
+}
+```
+
+**macOS / Linux**
+```json
+{
+  "mcpServers": {
+    "browser-hands": {
+      "command": "npx",
+      "args": ["-y", "browser-hands"]
     }
   }
 }
 ```
 
 Fully quit and reopen Claude, then ask it to use browser-hands.
+
+### Run from source
+
+```bash
+git clone https://github.com/ArifMojid/browser-hands.git
+cd browser-hands
+npm install
+npm run build
+npx @modelcontextprotocol/inspector node dist/server.js
+```
 
 ## Roadmap
 
