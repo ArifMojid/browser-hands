@@ -5,7 +5,7 @@ import { z } from "zod";
 import { openPage, readPage, listElements, clickElement, fillElement, pressKey } from "./browser.js";
 
 // Create the server and give it a name and version
-const server = new McpServer({ name: "browser-hands", version: "0.1.0" });
+const server = new McpServer({ name: "browser-hands", version: "0.2.0" });
 
 // Tool 1: open_page
 server.registerTool(
